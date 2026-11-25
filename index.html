@@ -49,6 +49,21 @@
   .choice.picked-ok { background:#e6f5ec; border-color:var(--ok); }
   .choice.picked-ng { background:#fbeaea; border-color:var(--ng); }
   em.hl { font-style:italic; text-decoration:underline; text-underline-offset:3px; font-weight:700; }
+  .choice.sel { background:#e8eefc; border-color:var(--accent); }
+  .choice.missed { border:2px dashed var(--ok); }
+  .items { display:flex; flex-direction:column; gap:6px; margin:6px 0; }
+  .item { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+  .iw { min-width:7em; font-family: Georgia, "Times New Roman", serif; font-size:1.08rem; }
+  .opt { border:1px solid var(--line); background:#fafbfc; border-radius:6px; padding:3px 9px; cursor:pointer; font-size:.95rem; font-family: Georgia, "Hiragino Sans", serif; color:var(--ink); }
+  .opt.sel { background:#e8eefc; border-color:var(--accent); }
+  .imark { font-weight:700; font-size:.9rem; }
+  .imark.ok { color:var(--ok); } .imark.ng { color:var(--ng); }
+  .cw { display:inline-flex; align-items:center; gap:2px; }
+  .spk { border:none; background:none; cursor:pointer; font-size:1rem; padding:2px 4px; border-radius:4px; opacity:.75; }
+  .spk:hover { background:#eef1f7; opacity:1; }
+  .ttsbar { font-size:.88rem; color:var(--sub); margin:0 0 10px; }
+  .ttsbar select { font-size:.85rem; margin-left:4px; }
+  .ttswarn { margin-top:6px; padding:8px 10px; background:#fff4e5; border:1px solid #f3d19c; border-radius:6px; color:#7a4a00; }
   .empty { background:var(--card); border:1px dashed var(--line); border-radius:10px; padding:28px; text-align:center; color:var(--sub); }
   .tips { background:#fffaf0; border:1px solid #f0e2c0; border-radius:10px; padding:12px 16px; font-size:.92rem; margin-bottom:8px; }
   .tips summary { cursor:pointer; font-weight:600; }
@@ -132,7 +147,183 @@ const SECTIONS = [
         explain: "eu はふつう [ɔʏ](「オイ」)。Museum は外来語で Mu-se-um と e と u が別々の音節なので「エーウ」。" },
       { group: "大問1", choices: ["se[chs]", "Ta[x]i", "nä[ch]st", "wa[chs]en"], answer: 3,
         readings: ["[ks]", "[ks]", "[ç]", "[ks]"],
-        explain: "chs と x は [ks](「クス」)。nächst の ch は chs ではなく ch + st なので、ä の後の [ç]。" }
+        explain: "chs と x は [ks](「クス」)。nächst の ch は chs ではなく ch + st なので、ä の後の [ç]。" },
+      // ================= 補足問題 =================
+      // type: 省略=1つ選ぶ / "multi"=当てはまるものを全部選ぶ / "items"=語ごとに選ぶ(長短・分類・アクセント)
+      // ---- プリント1 ----
+      { group: "補足問題 プリント1-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["dur[ch]", "Spra[ch]e", "wi[ch]tig", "mö[ch]te"], answer: 2,
+        readings: ["[ç]", "[x]", "[ç]", "[ç]"],
+        explain: "a, o, u, au の後の ch は [x]、それ以外(子音 r の後も含む)は [ç]。" },
+      { group: "補足問題 プリント1-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["ho[ch]", "Ku[ch]en", "au[ch]", "Re[ch]t"], answer: 4,
+        readings: ["[x]", "[x]", "[x]", "[ç]"],
+        explain: "o, u, au の後なので hoch, Kuchen, auch は [x]。Recht は e の後なので [ç]。" },
+      { group: "補足問題 プリント1-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["se[chs]", "Ta[x]i", "nä[ch]st", "wa[chs]en"], answer: 3,
+        readings: ["[ks]", "[ks]", "[ç]", "[ks]"],
+        explain: "chs と x は [ks]。nächst は ch + st なので ä の後の [ç]。" },
+      { group: "補足問題 プリント1-B:斜体の母音は長音か短音か", type: "items",
+        items: [
+          { w: "T[o]chter", opts: ["長", "短"], a: 2 }, { w: "B[u]ch", opts: ["長", "短"], a: 1 },
+          { w: "N[a]cht", opts: ["長", "短"], a: 2 }, { w: "h[o]ch", opts: ["長", "短"], a: 1 },
+          { w: "Z[u]cker", opts: ["長", "短"], a: 2 }, { w: "K[o]pf", opts: ["長", "短"], a: 2 },
+          { w: "Pf[e]rd", opts: ["長", "短"], a: 1 }, { w: "d[o]ch", opts: ["長", "短"], a: 2 } ],
+        explain: `<ul><li>原則:母音の後の子音が<b>1つなら長く</b>、<b>2つ以上なら短く</b>読む(Tochter, Nacht, Zucker, Kopf, doch)。</li>
+          <li>ch は2文字でも1つの子音扱いなので Buch, hoch は長い。doch は例外的に短い。</li>
+          <li>Pferd は rd と子音が2つだが例外で長い [eː]。</li></ul>` },
+      { group: "補足問題 プリント1-C:[ ]の発音を含む語をすべて選ぶ", type: "multi", labels: "iroha",
+        prompt: "[k]", choices: ["Onkel", "Junge", "Ecke", "Chrom", "Tag", "Chance"], answer: [1, 3, 4, 5],
+        readings: ["[k]", "[ŋ](ng)", "[k](ck)", "[k](Chr-)", "[k](語末の g)", "[ʃ](フランス語由来)"],
+        explain: "語末の g は [k] になる(Tag)。Ch は外来語で [k](Chrom)や [ʃ](Chance)になる。ng は [ŋ] で k の音は含まない。" },
+      { group: "補足問題 プリント1-C:[ ]の発音を含む語をすべて選ぶ", type: "multi", labels: "iroha",
+        prompt: "[ç]", choices: ["ich", "China", "König", "acht", "euch", "Chor"], answer: [1, 2, 3, 5],
+        readings: ["[ç]", "[ç]", "[ç](語末の -ig)", "[x]", "[ç]", "[k]"],
+        explain: "語末の -ig は [ɪç](König)。euch は eu の後で [ç](au の後とちがうので注意)。acht は a の後で [x]。Chor は [k]。" },
+      { group: "補足問題 プリント1-C:[ ]の発音を含む語をすべて選ぶ", type: "multi", labels: "iroha",
+        prompt: "[x]", choices: ["Echo", "rauchen", "Bach", "kochen", "wachsen", "Tuch"], answer: [2, 3, 4, 6],
+        readings: ["[ç]", "[x]", "[x]", "[x]", "[ks]", "[x]"],
+        explain: "a, o, u, au の後の ch が [x]。Echo は e の後なので [ç]、wachsen は chs なので [ks]。" },
+      { group: "補足問題 プリント1-C:[ ]の発音を含む語をすべて選ぶ", type: "multi", labels: "iroha",
+        prompt: "[ʃ]", choices: ["Stimme", "Spaß", "Knospe", "Charme", "Kasten", "Schule"], answer: [1, 2, 4, 6],
+        readings: ["[ʃt]", "[ʃp]", "[sp](語中)", "[ʃ](フランス語由来)", "[st]", "[ʃ](sch)"],
+        explain: "語頭の st, sp と sch は [ʃ]。Charme はフランス語由来で ch = [ʃ]。語中の sp, st(Knospe, Kasten)は [s]。" },
+
+      // ---- プリント2 ----
+      { group: "補足問題 プリント2-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["[S]tern", "ge[s]tern", "be[s]tehen", "[S]paß"], answer: 2,
+        readings: ["[ʃ]", "[s]", "[ʃ]", "[ʃ]"],
+        explain: "語頭(つづりの頭)の st, sp は [ʃt] [ʃp]。bestehen = be + stehen。gestern は語中なので [st]。" },
+      { group: "補足問題 プリント2-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["alle[s]", "gro[ß]", "Dien[s]tag", "[S]onntag"], answer: 4,
+        readings: ["[s]", "[s]", "[s]", "[z]"],
+        explain: "語末・音節末の s と ß は [s]。Sonntag の S は母音の前なので濁って [z]。" },
+      { group: "補足問題 プリント2-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["drei[ß]ig", "Pla[tz]", "aben[ds]", "nich[ts]"], answer: 1,
+        readings: ["[s]", "[ts]", "[ts]", "[ts]"],
+        explain: "tz, ts, そして語末の ds(d が [t] になる)はすべて [ts]。ß は [s]。" },
+      { group: "補足問題 プリント2-A:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["Mitt[w]och", "[v]iel", "No[v]ember", "beq[u]em"], answer: 2,
+        readings: ["[v]", "[f]", "[v]", "[v]"],
+        explain: "w は [v]、qu は [kv]。v はふつう [f](viel)だが、外来語の November は [v]。" },
+      { group: "補足問題 プリント2-B:斜体の母音は長音か短音か", type: "items",
+        items: [
+          { w: "Str[a]ße", opts: ["長", "短"], a: 1 }, { w: "[e]ssen", opts: ["長", "短"], a: 2 },
+          { w: "gr[o]ß", opts: ["長", "短"], a: 1 }, { w: "spr[e]chen", opts: ["長", "短"], a: 2 },
+          { w: "Spr[a]che", opts: ["長", "短"], a: 1 }, { w: "F[u]ß", opts: ["長", "短"], a: 1 },
+          { w: "Kl[o]ster", opts: ["長", "短"], a: 1 }, { w: "Fl[u]ß", opts: ["長", "短"], a: 2 } ],
+        explain: `<ul><li><b>ß の前は長母音</b>(Straße, groß, Fuß)。ss の前は短母音(essen)。</li>
+          <li>Fluß は旧つづりで、今は <b>Fluss</b>(短母音なので ss)と書く。</li>
+          <li>Sprache は a の後の ch が1つの子音扱いなので長い。sprechen は短い。</li>
+          <li>Kloster は st の前だが例外で長い。</li></ul>` },
+      { group: "補足問題 プリント2-C:斜体の部分の発音で分類", type: "items",
+        prompt: "それぞれの語の斜体部分の発音を選ぶ(各発音に2語ずつ)",
+        items: [
+          { w: "hei[ß]", a: 1 }, { w: "la[ch]en", a: 5 }, { w: "Ber[g]", a: 7 }, { w: "Deu[tsch]", a: 4 },
+          { w: "[s]tark", a: 3 }, { w: "Scha[tz]", a: 2 }, { w: "[sch]on", a: 3 }, { w: "We[s]ten", a: 1 },
+          { w: "Te[ch]nik", a: 6 }, { w: "ho[ch]", a: 5 }, { w: "[Tsch]eche", a: 4 }, { w: "Köni[g]", a: 6 },
+          { w: "Rei[s]e", a: 8 }, { w: "[Z]immer", a: 2 }, { w: "[S]ohn", a: 8 }, { w: "[Ch]aos", a: 7 } ]
+          .map(x => ({ ...x, opts: ["[s]", "[ts]", "[ʃ]", "[tʃ]", "[x]", "[ç]", "[k]", "[z]"] })),
+        explain: `<ul><li>[s]: heiß, Westen ／ [ts]: Schatz, Zimmer ／ [ʃ]: stark, schon ／ [tʃ]: Deutsch, Tscheche</li>
+          <li>[x]: lachen, hoch ／ [ç]: Technik, König ／ [k]: Berg, Chaos ／ [z]: Reise, Sohn</li>
+          <li><b>Sohn の S は母音の前なので [z]</b>(濁る)。<b>schon の sch は [ʃ]</b>。</li>
+          <li>Berg の語末の g は [k]、König の語末 -ig は [ç]。Chaos はギリシャ語由来で Ch = [k]。Tscheche =「チェコ人」。</li></ul>` },
+
+      // ---- プリント3 ----
+      { group: "補足問題 プリント3-A:長母音はどれか", type: "items",
+        prompt: "長く読む母音を選ぶ(例: Nāme)",
+        items: [
+          { w: "Monat", opts: ["M[o]nat", "Mon[a]t"], a: 1 },
+          { w: "Natur", opts: ["N[a]tur", "Nat[u]r"], a: 2 },
+          { w: "aber", opts: ["[a]ber", "ab[e]r"], a: 1 },
+          { w: "Japan", opts: ["J[a]pan", "Jap[a]n"], a: 1 },
+          { w: "nehmen", opts: ["n[e]hmen", "nehm[e]n"], a: 1 },
+          { w: "Examen", opts: ["[E]xamen", "Ex[a]men", "Exam[e]n"], a: 2 },
+          { w: "Bibel", opts: ["B[i]bel", "Bib[e]l"], a: 1 },
+          { w: "Italien", opts: ["[I]talien", "It[a]lien", "Ital[i]en"], a: 2 } ],
+        explain: `<ul><li>アクセントのある母音の後に子音が1つ → 長い(Mōnat, āber, Jāpan, Bībel)。</li>
+          <li><b>母音 + h</b> は長い(nēhmen)。h は読まない。</li>
+          <li>外来語はアクセントが後ろ寄り:Natūr, Exāmen, Itālien。</li></ul>` },
+      { group: "補足問題 プリント3-B:斜体の母音は長音か短音か", type: "items",
+        items: [
+          { w: "L[u]ft", opts: ["長", "短"], a: 2 }, { w: "g[u]t", opts: ["長", "短"], a: 1 },
+          { w: "[A]rzt", opts: ["長", "短"], a: 1 }, { w: "T[a]nte", opts: ["長", "短"], a: 2 },
+          { w: "P[o]st", opts: ["長", "短"], a: 2 }, { w: "[O]bst", opts: ["長", "短"], a: 1 },
+          { w: "d[u]nkel", opts: ["長", "短"], a: 2 }, { w: "Bl[u]t", opts: ["長", "短"], a: 1 },
+          { w: "T[i]ger", opts: ["長", "短"], a: 1 }, { w: "m[i]t", opts: ["長", "短"], a: 2 },
+          { w: "m[e]rken", opts: ["長", "短"], a: 2 }, { w: "[E]rde", opts: ["長", "短"], a: 1 } ],
+        explain: `<ul><li>原則どおり:子音1つ → 長(gut, Blut, Tiger)、子音2つ以上 → 短(Luft, Tante, dunkel, merken)。</li>
+          <li><b>例外で長い</b>:Arzt, Obst, Erde。<b>例外で短い</b>:mit。</li>
+          <li>Post は原則どおり短い(Obst と比べて覚える)。</li></ul>` },
+      { group: "補足問題 プリント3-C:アクセントの位置", type: "items",
+        prompt: "アクセントのある音節を選ぶ(例: Ónkel)",
+        items: [
+          { w: "gestern", opts: ["ges", "tern"], a: 1 },
+          { w: "bekommen", opts: ["be", "kom", "men"], a: 2 },
+          { w: "Monat", opts: ["Mo", "nat"], a: 1 },
+          { w: "Musik", opts: ["Mu", "sik"], a: 2 },
+          { w: "Anfang", opts: ["An", "fang"], a: 1 },
+          { w: "Antwort", opts: ["Ant", "wort"], a: 1 },
+          { w: "Atom", opts: ["A", "tom"], a: 2 },
+          { w: "Arbeit", opts: ["Ar", "beit"], a: 1 } ],
+        explain: `<ul><li>ドイツ語の語はふつう<b>最初の音節</b>にアクセント(géstern, Mónat, Árbeit)。</li>
+          <li>前つづり <b>be-</b> にはアクセントがない → bekómmen。</li>
+          <li>分離前つづり an-, ant- にはアクセントがある → Ánfang, Ántwort。</li>
+          <li><b>外来語は後ろ</b>にアクセントが来ることが多い → Musík, Atóm。</li></ul>` },
+      { group: "補足問題 プリント3-D:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["L[ie]be", "B[i]bel", "Famil[ie]", "B[ie]ne"], answer: 3,
+        readings: ["[iː]", "[iː]", "[iə]", "[iː]"],
+        explain: "ie はふつう [iː]。アクセントのない語末の -ie は [iə](Familie =「ファミーリエ」)。" },
+      { group: "補足問題 プリント3-D:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["[ei]ns", "Fräul[ei]n", "M[ai]", "L[ie]d"], answer: 4,
+        readings: ["[aɪ]", "[aɪ]", "[aɪ]", "[iː]"],
+        explain: "ei と ai は [aɪ]、ie は [iː]。" },
+      { group: "補足問題 プリント3-D:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["h[eu]te", "Mus[eu]m", "Fr[eu]de", "L[eu]te"], answer: 2,
+        readings: ["[ɔʏ]", "[eːʊ]", "[ɔʏ]", "[ɔʏ]"],
+        explain: "eu はふつう [ɔʏ]。Museum は Mu-se-um で e と u が別の音節。" },
+
+      // ---- プリント4 ----
+      { group: "補足問題 プリント4-A:斜体の部分の発音が左端の語と同じもの", labels: "iroha",
+        prompt: "hal[b]", choices: ["A[b]end", "Her[b]st", "ver[b]inden", "[B]uch"], answer: 2,
+        readings: ["[b]", "[p]", "[b]", "[b]"],
+        explain: "halb の語末の b は [p]。Herbst の b も子音の前(音節末)なので [p]。ほかは母音の前で [b]。" },
+      { group: "補足問題 プリント4-A:斜体の部分の発音が左端の語と同じもの", labels: "iroha",
+        prompt: "Lan[d]", choices: ["Run[d]funk", "[d]raußen", "Frie[d]e", "[D]ruck"], answer: 1,
+        readings: ["[t]", "[d]", "[d]", "[d]"],
+        explain: "Land の語末の d は [t]。Rund|funk の d も音節末なので [t]。" },
+      { group: "補足問題 プリント4-A:斜体の部分の発音が左端の語と同じもの", labels: "iroha",
+        prompt: "Jag[d]", choices: ["Fra[g]e", "[g]eboren", "stren[g]", "Flu[g]zeug"], answer: 4,
+        readings: ["[g]", "[g]", "[ŋ](ng)", "[k]"],
+        explain: "Jagd の g は子音 d の前(音節末)なので [k]。Flug|zeug の g も音節末で [k]。streng の ng は [ŋ]。" },
+      { group: "補足問題 プリント4-B:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["nai[v]", "Kla[v]ier", "[V]olk", "[F]ilm"], answer: 2,
+        readings: ["[f]", "[v]", "[f]", "[f]"],
+        explain: "v はふつう [f]。語末の v も [f](naiv)。外来語で母音にはさまれた Klavier の v は [v]。" },
+      { group: "補足問題 プリント4-B:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["[s]agen", "un[s]er", "Pau[s]e", "Sam[s]tag"], answer: 4,
+        readings: ["[z]", "[z]", "[z]", "[s]"],
+        explain: "母音の前の s は [z]。Sams|tag の s は音節末で [s]。" },
+      { group: "補足問題 プリント4-B:斜体の部分の発音が他と異なる語", labels: "iroha",
+        choices: ["[Z]immer", "je[tz]t", "Her[z]", "[T]ier"], answer: 4,
+        readings: ["[ts]", "[ts]", "[ts]", "[t]"],
+        explain: "z, tz は [ts]。Tier の T は [t]。" },
+      { group: "補足問題 プリント4-C:h を発音する語を2つ選ぶ", type: "multi", labels: "iroha",
+        choices: ["gehen", "Uhr", "erziehen", "Wohnung", "behaupten", "Autofahrer", "gehören"], answer: [5, 7],
+        readings: ["読まない", "読まない", "読まない", "読まない", "[h] 読む", "読まない", "[h] 読む"],
+        explain: "<b>母音の後の h は読まず</b>、前の母音を長くする(gehen, Uhr, Wohnung, fahren)。<b>語やつづりの頭の h は読む</b>:be|haupten, ge|hören(前つづり be-, ge- の後の h は語頭扱い)。" },
+      { group: "補足問題 プリント4-D:[ ]の発音を含む語", labels: "iroha",
+        prompt: "[ʒ]", choices: ["Junge", "Orange", "Geige", "Wagen"], answer: 2,
+        readings: ["[j]", "[ʒ]", "[g]", "[g]"],
+        explain: "フランス語由来の Orange の g は [ʒ](「オランジェ」)。Junge の J は [j]。" },
+      { group: "補足問題 プリント4-D:[ ]の発音を含む語", labels: "iroha",
+        prompt: "[ç]", choices: ["Tag", "jung", "wenig", "Zug"], answer: 3,
+        readings: ["[k]", "[ŋ]", "[ç]", "[k]"],
+        explain: "語末の -ig は [ɪç](wenig)。ほかの語末の g は [k]、ng は [ŋ]。" },
+      { group: "補足問題 プリント4-D:[ ]の発音を含む語", labels: "iroha",
+        prompt: "[g]", choices: ["Honig", "Zunge", "Weg", "Auge"], answer: 4,
+        readings: ["[ç]", "[ŋ]", "[k]", "[g]"],
+        explain: "母音の前の g だけが [g](Auge)。Honig は -ig で [ç]、Weg は語末で [k]、Zunge は ng で [ŋ]。" }
     ]
   },
   {
@@ -484,6 +675,7 @@ function render() {
   const main = document.getElementById("main");
   main.innerHTML = `
     <div class="section-head"><h2>${esc(sec.title)}</h2><p>${esc(sec.instruction)}</p></div>
+    ${sec.mode === "choice" ? `<div class="ttsbar" id="ttsbar"></div>` : ""}
     ${sec.tips ? `<details class="tips"><summary>要点まとめ</summary>${sec.tips}</details>` : ""}
     ${sec.questions.length ? `<div class="toolbar">
         <button id="showAll">すべての解答を表示</button>
@@ -495,6 +687,7 @@ function render() {
     qs.innerHTML = `<div class="empty">このセクションの問題はまだ登録されていません。</div>`;
     return;
   }
+  updateTtsBar();
   let lastGroup = null;
   sec.questions.forEach((q, i) => {
     if (q.group && q.group !== lastGroup) {
@@ -504,7 +697,7 @@ function render() {
     }
     qs.appendChild(sec.mode === "choice" ? renderChoice(sec, q, i) : renderQuestion(sec, q, i));
   });
-  if (sec.supplementGroup && !sec.questions.some(q => q.group === sec.supplementGroup)) {
+  if (sec.supplementGroup && !sec.questions.some(q => (q.group || "").startsWith(sec.supplementGroup))) {
     qs.insertAdjacentHTML("beforeend", `<div class="group">${esc(sec.supplementGroup)}</div>
       <div class="empty">補足問題はまだ登録されていません。</div>`);
   }
@@ -515,33 +708,124 @@ function render() {
 
 // "dur[ch]" → dur<em>ch</em>(斜体部分に下線)
 const hl = w => esc(w).replace(/\[(.+?)\]/g, '<em class="hl">$1</em>');
+// "[k]" のように全体が [ ] の場合は発音記号としてそのまま表示
+const hlo = t => /^\[[^\]]*\]$/.test(t) ? esc(t) : hl(t);
 const NUM = ["①","②","③","④","⑤"];
 
+/* ===== 読み上げ(ブラウザの音声合成 Web Speech API・ドイツ語) ===== */
+const TTS = "speechSynthesis" in window;
+const plain = t => t.replace(/[\[\]]/g, "");
+const deVoice = () => TTS ? speechSynthesis.getVoices().find(v => /^de([-_]|$)/i.test(v.lang)) : null;
+let ttsRate = 0.8;
+function speak(text) {
+  if (!TTS) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "de-DE";
+  const v = deVoice(); if (v) u.voice = v;
+  u.rate = ttsRate;
+  speechSynthesis.speak(u);
+}
+const spk = t => TTS ? `<button type="button" class="spk" data-say="${esc(plain(t))}" title="読み上げ" aria-label="${esc(plain(t))} を読み上げ">🔊</button>` : "";
+function ttsNotice() {
+  if (!TTS) return "このブラウザは読み上げ機能に対応していません。Chrome や Safari の最新版で開くと🔊ボタンで発音を聞けます。";
+  if (speechSynthesis.getVoices().length && !deVoice())
+    return "この端末にドイツ語の音声が見つからないため、別の言語の発音で読まれる可能性があります。iPhone は「設定 > アクセシビリティ > 読み上げコンテンツ > 声」、Android は「設定 > テキスト読み上げ」からドイツ語の音声を追加してください。";
+  return "";
+}
+function updateTtsBar() {
+  const el = document.getElementById("ttsbar"); if (!el) return;
+  const msg = ttsNotice();
+  el.innerHTML = `${TTS ? `🔊 単語の横のボタンで発音を聞けます。速さ:
+    <select id="ttsRate"><option value="0.6">ゆっくり</option><option value="0.8">ふつう</option><option value="1">速め</option></select>` : ""}
+    ${msg ? `<div class="ttswarn">${esc(msg)}</div>` : ""}`;
+  const sel = document.getElementById("ttsRate");
+  if (sel) { sel.value = String(ttsRate); sel.onchange = () => ttsRate = +sel.value; }
+}
+if (TTS) speechSynthesis.addEventListener("voiceschanged", updateTtsBar);
+document.addEventListener("click", e => {
+  const b = e.target.closest(".spk"); if (b) { e.stopPropagation(); speak(b.dataset.say); }
+}, true);
+
+const IROHA = ["イ","ロ","ハ","ニ","ホ","ヘ","ト","チ"];
+
+// 選択式(1つ選ぶ / 複数選ぶ / 語ごとに選ぶ)
 function renderChoice(sec, q, i) {
+  const L = q.labels === "iroha" ? IROHA : NUM;
+  const type = q.type || "single";
   const d = document.createElement("div");
   d.className = "q";
+  const choicesHtml = type === "items"
+    ? `<div class="items">${q.items.map((it, j) => `
+        <div class="item" data-j="${j}"><span class="iw">${hl(it.w)}${spk(it.w)}</span>
+          <span class="iopts">${it.opts.map((o, k) => `<button type="button" class="opt" data-k="${k + 1}">${hlo(o)}</button>`).join("")}</span>
+          <span class="imark"></span></div>`).join("")}</div>`
+    : `<div class="choices">${q.choices.map((c, k) =>
+        `<span class="cw"><button type="button" class="choice" data-k="${k + 1}">${L[k]} ${hl(c)}</button>${spk(c)}</span>`).join("")}</div>`;
+  const correctText = type === "items"
+    ? q.items.map(it => `${hl(it.w)} → <b>${hlo(it.opts[it.a - 1])}</b>`).join(" ／ ")
+    : [].concat(q.answer).map(a => `${L[a - 1]} ${hl(q.choices[a - 1])}`).join("、");
   d.innerHTML = `
-    <div class="num">問 ${i + 1}</div>
-    <div class="choices">${q.choices.map((c, k) =>
-      `<button type="button" class="choice" data-k="${k + 1}">${NUM[k]} ${hl(c)}</button>`).join("")}</div>
-    <div class="actions"><button class="btn-show">解答・解説を見る</button></div>
+    <div class="num">問 ${i + 1}${type === "multi" ? "(当てはまるものをすべて選ぶ)" : ""}</div>
+    ${q.prompt ? `<div class="prompt">${/^\[[^\]]*\]$/.test(q.prompt) ? "発音 " + esc(q.prompt) : hl(q.prompt) + (q.prompt.includes("[") ? spk(q.prompt) : "")}</div>` : ""}
+    ${choicesHtml}
+    <div class="actions">
+      ${type === "single" ? "" : `<button class="btn-check">答え合わせ</button>`}
+      <button class="btn-show">解答・解説を見る</button>
+    </div>
     <div class="result"></div>
     <div class="answer">
-      <div class="model ja-model">正解: ${NUM[q.answer - 1]} ${hl(q.choices[q.answer - 1])}</div>
-      ${q.readings ? `<div class="alt">${q.choices.map((c, k) => `${NUM[k]} ${hl(c)} ${esc(q.readings[k])}`).join(" / ")}</div>` : ""}
+      <div class="model ja-model">正解: ${correctText}</div>
+      ${q.readings ? `<div class="alt">${q.choices.map((c, k) => `${L[k]} ${hl(c)} ${esc(q.readings[k])}`).join(" / ")}</div>` : ""}
       ${q.explain ? `<div class="exp">${q.explain}</div>` : ""}
     </div>`;
   const res = d.querySelector(".result"), ans = d.querySelector(".answer");
-  d.querySelectorAll(".choice").forEach(b => b.onclick = () => {
-    const ok = +b.dataset.k === q.answer;
+  const finish = ok => {
     (state[sec.id] ||= {})[i] = ok;
-    d.querySelectorAll(".choice").forEach(x => x.classList.remove("picked-ok", "picked-ng"));
-    b.classList.add(ok ? "picked-ok" : "picked-ng");
     res.className = "result " + (ok ? "ok" : "ng");
-    res.textContent = ok ? "◎ 正解!" : `× 正解は ${NUM[q.answer - 1]} です。`;
+    res.textContent = ok ? "◎ 正解!" : "× 解答・解説を確認しよう。";
     ans.classList.add("open");
     renderScore(sec);
-  });
+  };
+  if (type === "single") {
+    d.querySelectorAll(".choice").forEach(b => b.onclick = () => {
+      const ok = +b.dataset.k === q.answer;
+      d.querySelectorAll(".choice").forEach(x => x.classList.remove("picked-ok", "picked-ng"));
+      b.classList.add(ok ? "picked-ok" : "picked-ng");
+      finish(ok);
+      if (!ok) res.textContent = `× 正解は ${L[q.answer - 1]} です。`;
+    });
+  } else if (type === "multi") {
+    d.querySelectorAll(".choice").forEach(b => b.onclick = () => b.classList.toggle("sel"));
+    d.querySelector(".btn-check").onclick = () => {
+      const want = new Set(q.answer); let ok = true;
+      d.querySelectorAll(".choice").forEach(b => {
+        const k = +b.dataset.k, sel = b.classList.contains("sel");
+        b.classList.remove("picked-ok", "picked-ng", "missed");
+        if (sel && want.has(k)) b.classList.add("picked-ok");
+        else if (sel) { b.classList.add("picked-ng"); ok = false; }
+        else if (want.has(k)) { b.classList.add("missed"); ok = false; }
+      });
+      finish(ok);
+    };
+  } else {
+    d.querySelectorAll(".item").forEach(row => row.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      row.querySelectorAll(".opt").forEach(x => x.classList.remove("sel"));
+      b.classList.add("sel");
+    }));
+    d.querySelector(".btn-check").onclick = () => {
+      let ok = true;
+      d.querySelectorAll(".item").forEach(row => {
+        const it = q.items[+row.dataset.j], sel = row.querySelector(".opt.sel");
+        const good = sel && +sel.dataset.k === it.a;
+        if (!good) ok = false;
+        const m = row.querySelector(".imark");
+        m.className = "imark " + (good ? "ok" : "ng");
+        m.innerHTML = good ? "○" : `× → ${hlo(it.opts[it.a - 1])}`;
+      });
+      finish(ok);
+    };
+  }
   d.querySelector(".btn-show").onclick = () => ans.classList.toggle("open");
   return d;
 }
