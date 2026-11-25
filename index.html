@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ドイツ語 後期中間試験対策</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1d2330; --sub:#5b6475; --line:#dde1e8; --accent:#2f5bd3; --ok:#1f8a4c; --ng:#c0392b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+  header { background:var(--card); border-bottom:1px solid var(--line); padding:16px 20px; position:sticky; top:0; z-index:10; }
+  header h1 { margin:0; font-size:1.15rem; }
+  nav { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  nav button { flex:none; border:1px solid var(--line); background:var(--card); padding:6px 12px; border-radius:999px; cursor:pointer; font-size:.9rem; color:var(--ink); }
+  nav button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  nav button .count { opacity:.7; font-size:.8em; margin-left:4px; }
+  main { max-width:760px; margin:0 auto; padding:20px; }
+  .section-head { margin-bottom:16px; }
+  .section-head h2 { margin:0 0 4px; font-size:1.1rem; }
+  .section-head p { margin:0; color:var(--sub); font-size:.92rem; }
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 4px; align-items:center; }
+  .toolbar button { border:1px solid var(--line); background:var(--card); border-radius:6px; padding:6px 10px; cursor:pointer; font-size:.88rem; }
+  .score { margin-left:auto; font-weight:600; }
+  .q { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:12px 0; }
+  .q .num { color:var(--sub); font-size:.85rem; }
+  .q .prompt { font-size:1.15rem; margin:4px 0 10px; font-family: Georgia, "Times New Roman", serif; }
+  .q textarea { width:100%; font-size:1.05rem; padding:8px 10px; border:1px solid var(--line); border-radius:6px; font-family: Georgia, "Times New Roman", serif; resize:vertical; min-height:2.6em; }
+  .chars { display:flex; gap:6px; margin:6px 0; }
+  .chars button { border:1px solid var(--line); background:#fafbfc; border-radius:4px; width:34px; height:30px; cursor:pointer; font-size:1rem; }
+  .actions { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .actions button { border:none; border-radius:6px; padding:7px 14px; cursor:pointer; font-size:.92rem; }
+  .btn-check { background:var(--accent); color:#fff; }
+  .btn-show { background:#e8ecf5; color:var(--ink); }
+  .result { margin-top:10px; font-weight:600; }
+  .result.ok { color:var(--ok); } .result.ng { color:var(--ng); }
+  .answer { margin-top:10px; padding:12px; background:#f3f6fd; border-radius:8px; display:none; }
+  .answer.open { display:block; }
+  .answer .model { font-family: Georgia, "Times New Roman", serif; font-size:1.08rem; font-weight:600; }
+  .answer .alt { color:var(--sub); font-size:.9rem; margin-top:4px; }
+  .answer .ja { margin-top:4px; }
+  .answer .exp { margin-top:8px; font-size:.93rem; }
+  .answer .exp ul { margin:4px 0; padding-left:1.2em; }
+  .self { margin-top:6px; font-size:.85rem; }
+  .self button { border:1px solid var(--line); background:var(--card); border-radius:4px; padding:2px 8px; cursor:pointer; font-size:.85rem; }
+  .group { margin:22px 0 4px; font-size:.85rem; font-weight:700; color:var(--accent); letter-spacing:.05em; }
+  .answer .ja-model { font-family:inherit; font-weight:600; font-size:1rem; }
+  .empty { background:var(--card); border:1px dashed var(--line); border-radius:10px; padding:28px; text-align:center; color:var(--sub); }
+  .tips { background:#fffaf0; border:1px solid #f0e2c0; border-radius:10px; padding:12px 16px; font-size:.92rem; margin-bottom:8px; }
+  .tips summary { cursor:pointer; font-weight:600; }
+  .tips table { border-collapse:collapse; margin:6px 0; }
+  .tips td, .tips th { border:1px solid #eadfc4; padding:3px 8px; text-align:left; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ドイツ語 後期中間試験対策</h1>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+
+<script>
+/* =====================================================================
+   問題データ
+   ---------------------------------------------------------------------
+   セクションごとに questions 配列へ問題を追加するだけで画面に反映されます。
+   各問題のフィールド:
+     prompt   : 問題文(写真どおり)
+     answers  : 正解として受け付ける解答(1つ目が模範解答)
+     ja       : 和訳(任意)
+     explain  : 解説(HTML可、任意)
+   ===================================================================== */
+const SECTIONS = [
+  {
+    id: "pronunciation",
+    title: "1. 発音",
+    instruction: "(問題写真の受け取り後に追加予定)",
+    questions: []
+  },
+  {
+    id: "passive",
+    title: "2. 受動文への書き換え",
+    instruction: "次の能動文を受動文に書き換えなさい。(5点×4)",
+    tips: `
+      <p><b>受動文の作り方:</b> werden(助動詞) + 過去分詞(文末)。能動文の4格目的語 → 受動文の主語(1格)。能動文の主語 → <b>von + 3格</b>(省略可)。<br>
+      man が主語の文は、受動文では行為者を書かない。</p>
+      <table>
+        <tr><th>時制</th><th>形</th><th>例</th></tr>
+        <tr><td>現在</td><td>wird ... 過去分詞</td><td>Der Brief <b>wird</b> geschrieben.</td></tr>
+        <tr><td>過去</td><td>wurde ... 過去分詞</td><td>Der Brief <b>wurde</b> geschrieben.</td></tr>
+        <tr><td>現在完了</td><td>ist ... 過去分詞 + worden</td><td>Der Brief <b>ist</b> geschrieben <b>worden</b>.</td></tr>
+      </table>
+      <p>※ 3格目的語(mir など)は受動文でも3格のまま残る。主語にはならない。</p>`,
+    questions: [
+      {
+        prompt: "Seine Sekretärin schrieb diesen Brief.",
+        answers: [
+          "Dieser Brief wurde von seiner Sekretärin geschrieben.",
+          "Von seiner Sekretärin wurde dieser Brief geschrieben."
+        ],
+        ja: "この手紙は彼の秘書によって書かれた。",
+        explain: `<ul>
+          <li>schrieb は schreiben の<b>過去形</b> → 受動の過去 <b>wurde + 過去分詞</b>。</li>
+          <li>4格 diesen Brief → 主語の1格 <b>dieser Brief</b>(語尾 -en → -er)。</li>
+          <li>主語 seine Sekretärin → <b>von seiner Sekretärin</b>(von は3格支配、女性3格は -er)。</li>
+          <li>過去分詞 geschrieben は文末。</li></ul>`
+      },
+      {
+        prompt: "Mein Mann hat mir den Ring geschenkt.",
+        answers: [
+          "Der Ring ist mir von meinem Mann geschenkt worden.",
+          "Mir ist der Ring von meinem Mann geschenkt worden.",
+          "Von meinem Mann ist mir der Ring geschenkt worden.",
+          "Der Ring ist von meinem Mann mir geschenkt worden."
+        ],
+        ja: "その指輪は夫から私に贈られた。",
+        explain: `<ul>
+          <li>hat ... geschenkt は<b>現在完了</b> → 受動の現在完了 <b>ist + 過去分詞 + worden</b>(geworden ではなく worden!)。</li>
+          <li>4格 den Ring → 主語 <b>der Ring</b>。</li>
+          <li>3格 mir は<b>そのまま mir</b>(主語にならない)。</li>
+          <li>主語 mein Mann → <b>von meinem Mann</b>(男性3格 -em)。</li></ul>`
+      },
+      {
+        prompt: "In Österreich spricht man Deutsch.",
+        answers: [
+          "In Österreich wird Deutsch gesprochen.",
+          "Deutsch wird in Österreich gesprochen.",
+          "Es wird in Österreich Deutsch gesprochen."
+        ],
+        ja: "オーストリアではドイツ語が話されている。",
+        explain: `<ul>
+          <li>spricht は sprechen の<b>現在形</b> → <b>wird + 過去分詞</b>。</li>
+          <li>主語が <b>man</b> なので、受動文では行為者(von ...)を<b>書かない</b>。</li>
+          <li>過去分詞 sprechen → <b>gesprochen</b>(不規則変化に注意)。</li>
+          <li>In Österreich を文頭に残すと、定動詞 wird が2番目に来る。</li></ul>`
+      },
+      {
+        prompt: "Frau Schmidt hält den Vortrag.",
+        answers: [
+          "Der Vortrag wird von Frau Schmidt gehalten.",
+          "Von Frau Schmidt wird der Vortrag gehalten."
+        ],
+        ja: "その講演はシュミットさんによって行われる。",
+        explain: `<ul>
+          <li>hält は halten の<b>現在形</b>(du hältst, er hält と幹母音が変わる) → <b>wird + 過去分詞</b>。</li>
+          <li>4格 den Vortrag → 主語 <b>der Vortrag</b>。</li>
+          <li>Frau Schmidt → <b>von Frau Schmidt</b>(人名は冠詞なしでそのまま)。</li>
+          <li>過去分詞 halten → <b>gehalten</b>。</li></ul>`
+      }
+    ]
+  },
+  {
+    id: "de2ja",
+    title: "3. 独文和訳",
+    instruction: "日本語に訳しなさい。(自分の訳を書いてから訳例と見比べ、○/×で自己採点)",
+    mode: "translate",   // 自由記述:訳例と見比べて自己採点する形式
+    questions: [
+      { group: "CD 29 Ⅲ",
+        prompt: "Dieses Auto ist für uns zu groß. Wir möchten ein kleineres Auto haben.",
+        answers: ["この車は私たちには大きすぎます。私たちはもっと小さい車が欲しいです。"],
+        explain: `<ul><li><b>zu</b> + 形容詞 =「〜すぎる」。für uns =「私たちにとって」。</li>
+          <li><b>kleineres</b> = klein の比較級 kleiner + 中性語尾 -es(ein kleineres Auto)。</li>
+          <li><b>möchten</b> + 4格 =「〜が欲しい」。</li></ul>` },
+      { group: "CD 29 Ⅲ",
+        prompt: "Wer sind die hier auf dem Foto? — Das hier ist mein Onkel, und die beiden da vorne sind meine Schwestern.",
+        answers: ["写真のここに写っている人たちは誰ですか? ― ここにいるのは私のおじで、前にいる二人は私の姉妹です。"],
+        explain: `<ul><li>die hier の <b>die</b> は指示代名詞(複数)=「この人たち」。</li>
+          <li><b>Das</b> hier ist ... =「ここにいるのは〜です」(紹介の das は性・数に関係なく使える)。</li>
+          <li><b>die beiden</b> =「その二人」、da vorne =「あそこの前のほう」。</li></ul>` },
+      { group: "CD 29 Ⅲ",
+        prompt: "Ist jemand inzwischen gekommen? — Nein, niemand.",
+        answers: ["その間に誰か来ましたか? ― いいえ、誰も(来ませんでした)。"],
+        explain: `<ul><li><b>jemand</b> =「誰か」、<b>niemand</b> =「誰も〜ない」。</li>
+          <li>kommen の現在完了は <b>sein</b> 支配(ist ... gekommen)。</li>
+          <li><b>inzwischen</b> =「その間に、そうこうするうちに」。</li></ul>` },
+
+      { group: "CD 31 Ⅲ",
+        prompt: "Wann und wo sind Sie geboren? — Ich bin 1985 in Bonn geboren.",
+        answers: ["あなたはいつ、どこで生まれましたか? ― 私は1985年にボンで生まれました。"],
+        explain: `<ul><li><b>sein + geboren</b> =「生まれた」(状態受動)。存命の人について使う。</li>
+          <li>年号 1985 は前置詞なしで「1985年に」(neunzehnhundertfünfundachtzig)。</li></ul>` },
+      { group: "CD 31 Ⅲ",
+        prompt: "Das Kind kam weinend nach Haus und sagte zu seiner Mutter: „Mein Fahrrad wurde gestohlen!“",
+        answers: ["その子どもは泣きながら家に帰ってきて、母親に「ぼくの自転車が盗まれた!」と言った。"],
+        explain: `<ul><li><b>weinend</b> = weinen の現在分詞 =「泣きながら」。</li>
+          <li>nach Haus(e) kommen =「帰宅する」。kam は kommen の過去形。</li>
+          <li><b>wurde gestohlen</b> = 受動の過去「盗まれた」(stehlen – stahl – gestohlen)。</li></ul>` },
+      { group: "CD 31 Ⅲ",
+        prompt: "Heute wird der Geburtstag meines Großvaters gefeiert. Er wird 80 Jahre alt.",
+        answers: ["今日は私の祖父の誕生日が祝われます。祖父は80歳になります。"],
+        explain: `<ul><li>1文目の wird は<b>受動の助動詞</b>(wird + gefeiert =「祝われる」)。</li>
+          <li>2文目の wird は<b>本動詞 werden「〜になる」</b>。過去分詞がないことで見分ける。</li>
+          <li>meines Großvaters = 男性2格「私の祖父の」。</li></ul>` },
+      { group: "CD 31 Ⅲ",
+        prompt: "1990 wurden die zwei deutschen Staaten, die BRD und die DDR, vereint.",
+        answers: ["1990年に、二つのドイツ国家、つまり西ドイツ(BRD)と東ドイツ(DDR)が統一された。"],
+        explain: `<ul><li><b>wurden ... vereint</b> = 受動の過去(複数)「統一された」。</li>
+          <li>die BRD und die DDR は die zwei deutschen Staaten の<b>同格</b>(言い換え)。</li>
+          <li>BRD = ドイツ連邦共和国(西ドイツ)、DDR = ドイツ民主共和国(東ドイツ)。</li></ul>` },
+
+      { group: "CD 33 Ⅱ",
+        prompt: "Ich danke Ihnen für Ihren Gruß aus Italien. Ich habe mich über die schöne Karte sehr gefreut.",
+        answers: ["イタリアからのお便り(ごあいさつ)をありがとうございます。すてきなはがきをいただいて、とてもうれしかったです。"],
+        explain: `<ul><li><b>j³ für et⁴ danken</b> =「〜に…のことで感謝する」。</li>
+          <li><b>sich über et⁴ freuen</b> =「(起きたこと)を喜ぶ」。※ sich auf et⁴ freuen は「(これからのこと)を楽しみにする」。</li>
+          <li>再帰動詞の現在完了は haben 支配(habe mich ... gefreut)。</li></ul>` },
+      { group: "CD 33 Ⅱ",
+        prompt: "Beeilen Sie sich! Der Zug fährt in 3 Minuten ab.",
+        answers: ["急いでください! 列車はあと3分で発車します。"],
+        explain: `<ul><li><b>sich beeilen</b>(再帰動詞)=「急ぐ」。Sie への命令形は 動詞 + Sie + sich。</li>
+          <li><b>ab|fahren</b> は分離動詞 → fährt ... ab =「出発する」。</li>
+          <li><b>in</b> + 時間 =「(今から)〜後に」。</li></ul>` },
+      { group: "CD 33 Ⅱ",
+        prompt: "Damals gab es hier eine Schule. Ich erinnere mich noch ganz gut an meine Schulfreunde.",
+        answers: ["当時ここには学校がありました。私は今でも学校の友だちのことをとてもよく覚えています。"],
+        explain: `<ul><li><b>es gibt + 4格</b> =「〜がある」。gab は過去形。</li>
+          <li><b>sich an j⁴/et⁴ erinnern</b> =「〜を覚えている、思い出す」。</li>
+          <li>noch =「今でも」、ganz gut =「とてもよく」。</li></ul>` },
+      { group: "CD 33 Ⅱ",
+        prompt: "Meine Mutter hat am 3. August Geburtstag.",
+        answers: ["私の母は8月3日が誕生日です。"],
+        explain: `<ul><li><b>Geburtstag haben</b> =「誕生日である」。</li>
+          <li><b>am 3. August</b> = am dritten August(日付は序数、am = an + dem)。</li></ul>` },
+
+      { group: "CD 35 Ⅲ",
+        prompt: "Das sind die Namen der Studenten, die die Prüfung bestanden haben.",
+        answers: ["これらが、試験に合格した学生たちの名前です。"],
+        explain: `<ul><li>1つ目の die は<b>関係代名詞</b>(複数1格、先行詞は Studenten)、2つ目の die は定冠詞(die Prüfung)。</li>
+          <li>関係文では定動詞が文末(bestanden <b>haben</b>)。</li>
+          <li><b>eine Prüfung bestehen</b> =「試験に合格する」。der Studenten = 複数2格。</li></ul>` },
+      { group: "CD 35 Ⅲ",
+        prompt: "Der Dichter, dessen Gedichte ich sehr hoch schätze, ist heute gestorben.",
+        answers: ["私がその詩をとても高く評価している詩人が、今日亡くなりました。"],
+        explain: `<ul><li><b>dessen</b> = 関係代名詞の男性2格「その人の」→ dessen Gedichte =「その人の詩」。</li>
+          <li>hoch schätzen =「高く評価する」。</li>
+          <li>sterben の現在完了は sein 支配(ist gestorben)。</li></ul>` },
+      { group: "CD 35 Ⅲ",
+        prompt: "Es sind wahrscheinlich die Beatles, die auf die Rockmusik den größten Einfluss ausgeübt haben.",
+        answers: ["ロック音楽に最も大きな影響を与えたのは、おそらくビートルズでしょう。"],
+        explain: `<ul><li><b>Es sind ..., die ...</b> は強調構文「〜したのは…だ」(後ろが複数なので sind)。</li>
+          <li><b>auf et⁴ Einfluss aus|üben</b> =「〜に影響を与える」。</li>
+          <li>den größten = groß の最上級(男性4格)。</li></ul>` },
+      { group: "CD 35 Ⅲ",
+        prompt: "Früher glaubte man, dass die Erde flach ist.",
+        answers: ["昔は、地球は平らだと信じられていました。"],
+        explain: `<ul><li><b>man</b> =(一般の)人々。「〜と信じられていた」と受け身風に訳すと自然。</li>
+          <li><b>dass</b> 副文では定動詞が文末(flach <b>ist</b>)。</li></ul>` },
+
+      { group: "CD 37 Ⅰ",
+        prompt: "Wenn ich nicht erkältet wäre, würde ich gerne mitkommen.",
+        answers: ["もし風邪をひいていなければ、喜んで一緒に行くのですが。"],
+        explain: `<ul><li><b>接続法第2式</b>の非現実の条件文。wäre(sein)、würde + 不定詞。</li>
+          <li>実際は「風邪をひいているので行けない」という意味。</li>
+          <li>erkältet sein =「風邪をひいている」、mit|kommen =「一緒に来る/行く」。</li></ul>` },
+      { group: "CD 37 Ⅰ",
+        prompt: "Fritz hat mir geschrieben, er komme am 3. April nach München zurück.",
+        answers: ["フリッツは私に、4月3日にミュンヘンに戻ると書いてよこしました。"],
+        explain: `<ul><li><b>komme</b> = 接続法第1式(間接話法)。他人の言葉を「〜と」伝える。</li>
+          <li><b>zurück|kommen</b> は分離動詞 =「戻る」。</li></ul>` },
+      { group: "CD 37 Ⅰ",
+        prompt: "Er lebt so, als ob er ein König wäre.",
+        answers: ["彼はまるで王様であるかのように暮らしている。"],
+        explain: `<ul><li><b>als ob + 接続法第2式</b> =「まるで〜であるかのように」。</li>
+          <li>als ob の文でも定動詞は文末(wäre)。</li></ul>` }
+    ]
+  },
+  {
+    id: "ja2de",
+    title: "4. 和文独訳",
+    instruction: "(問題写真の受け取り後に追加予定)",
+    questions: []
+  }
+];
+
+/* ===================== アプリ本体 ===================== */
+const state = {};   // state[sectionId][i] = true(正解) / false(不正解)
+let current = location.hash.slice(1) || "passive";
+if (!SECTIONS.some(s => s.id === current)) current = SECTIONS[0].id;
+
+const norm = s => s.normalize("NFC").toLowerCase()
+  .replace(/ae/g,"ä").replace(/oe/g,"ö").replace(/ue/g,"ü").replace(/ss/g,"ß")
+  .replace(/[.,!?。、]/g,"").replace(/\s+/g," ").trim();
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function renderNav() {
+  const nav = document.getElementById("nav");
+  nav.innerHTML = "";
+  SECTIONS.forEach(s => {
+    const b = document.createElement("button");
+    b.innerHTML = `${esc(s.title)}<span class="count">${s.questions.length}問</span>`;
+    if (s.id === current) b.className = "active";
+    b.onclick = () => { current = s.id; location.hash = s.id; render(); };
+    nav.appendChild(b);
+  });
+}
+
+function renderScore(sec) {
+  const r = state[sec.id] || {};
+  const done = Object.keys(r).length, ok = Object.values(r).filter(Boolean).length;
+  const el = document.getElementById("score");
+  if (el) el.textContent = sec.questions.length ? `正解 ${ok} / ${sec.questions.length}(回答済 ${done})` : "";
+}
+
+function render() {
+  renderNav();
+  const sec = SECTIONS.find(s => s.id === current);
+  const main = document.getElementById("main");
+  main.innerHTML = `
+    <div class="section-head"><h2>${esc(sec.title)}</h2><p>${esc(sec.instruction)}</p></div>
+    ${sec.tips ? `<details class="tips"><summary>要点まとめ</summary>${sec.tips}</details>` : ""}
+    ${sec.questions.length ? `<div class="toolbar">
+        <button id="showAll">すべての解答を表示</button>
+        <button id="reset">リセット</button>
+        <span class="score" id="score"></span></div>` : ""}
+    <div id="qs"></div>`;
+  const qs = document.getElementById("qs");
+  if (!sec.questions.length) {
+    qs.innerHTML = `<div class="empty">このセクションの問題はまだ登録されていません。</div>`;
+    return;
+  }
+  let lastGroup = null;
+  sec.questions.forEach((q, i) => {
+    if (q.group && q.group !== lastGroup) {
+      const h = document.createElement("div");
+      h.className = "group"; h.textContent = q.group;
+      qs.appendChild(h); lastGroup = q.group;
+    }
+    qs.appendChild(renderQuestion(sec, q, i));
+  });
+  document.getElementById("showAll").onclick = () => qs.querySelectorAll(".answer").forEach(a => a.classList.add("open"));
+  document.getElementById("reset").onclick = () => { state[sec.id] = {}; render(); };
+  renderScore(sec);
+}
+
+function renderQuestion(sec, q, i) {
+  const tr = sec.mode === "translate";
+  const d = document.createElement("div");
+  d.className = "q";
+  d.innerHTML = `
+    <div class="num">問 ${i + 1}</div>
+    <div class="prompt">${esc(q.prompt)}</div>
+    <textarea rows="2" placeholder="${tr ? "→ 日本語訳を書いてみよう" : "→ ここに解答を入力"}" spellcheck="false" autocapitalize="off"></textarea>
+    ${tr ? "" : `<div class="chars">${["ä","ö","ü","ß","Ä","Ö","Ü"].map(c => `<button type="button">${c}</button>`).join("")}</div>`}
+    <div class="actions">
+      ${tr ? `<button class="btn-check">訳例と比べる</button>` : `<button class="btn-check">答え合わせ</button>`}
+      <button class="btn-show">解答・解説を見る</button>
+    </div>
+    <div class="result"></div>
+    <div class="answer">
+      <div class="model${tr ? " ja-model" : ""}">${tr ? "訳例: " : ""}${esc(q.answers[0])}</div>
+      ${q.answers.length > 1 ? `<div class="alt">別解: ${q.answers.slice(1).map(esc).join(" / ")}</div>` : ""}
+      ${q.ja ? `<div class="ja">訳: ${esc(q.ja)}</div>` : ""}
+      ${q.explain ? `<div class="exp">${q.explain}</div>` : ""}
+    </div>`;
+  const ta = d.querySelector("textarea"), res = d.querySelector(".result"), ans = d.querySelector(".answer");
+  d.querySelectorAll(".chars button").forEach(b => b.onclick = () => {
+    const s = ta.selectionStart, e = ta.selectionEnd;
+    ta.value = ta.value.slice(0, s) + b.textContent + ta.value.slice(e);
+    ta.focus(); ta.selectionStart = ta.selectionEnd = s + 1;
+  });
+  const mark = ok => {
+    (state[sec.id] ||= {})[i] = ok;
+    res.className = "result " + (ok ? "ok" : "ng");
+    res.innerHTML = ok ? "◎ 正解!" :
+      `× 模範解答と一致しませんでした。<div class="self">表現の違いだけなら <button>正解にする</button></div>`;
+    if (!ok) res.querySelector("button").onclick = () => mark(true);
+    ans.classList.add("open");
+    renderScore(sec);
+  };
+  d.querySelector(".btn-check").onclick = tr ? () => {
+    ans.classList.add("open");
+    res.className = "result";
+    res.innerHTML = `<div class="self">意味が合っていたら → <button data-v="1">○ できた</button> <button data-v="0">× まだ</button></div>`;
+    res.querySelectorAll("button").forEach(b => b.onclick = () => {
+      (state[sec.id] ||= {})[i] = b.dataset.v === "1";
+      res.className = "result " + (b.dataset.v === "1" ? "ok" : "ng");
+      res.textContent = b.dataset.v === "1" ? "○ できた" : "× もう一度復習";
+      renderScore(sec);
+    });
+  } : () => {
+    if (!ta.value.trim()) { res.className = "result ng"; res.textContent = "解答を入力してください。"; return; }
+    mark(q.answers.some(a => norm(a) === norm(ta.value)));
+  };
+  d.querySelector(".btn-show").onclick = () => ans.classList.toggle("open");
+  return d;
+}
+
+window.addEventListener("hashchange", () => {
+  const h = location.hash.slice(1);
+  if (SECTIONS.some(s => s.id === h) && h !== current) { current = h; render(); }
+});
+render();
+</script>
+</body>
+</html>
