@@ -266,8 +266,127 @@ const SECTIONS = [
   {
     id: "ja2de",
     title: "4. 和文独訳",
-    instruction: "(問題写真の受け取り後に追加予定)",
-    questions: []
+    instruction: "ドイツ語に訳しなさい。(語順や単語の違う別解は「正解にする」で自己判定)",
+    questions: [
+      { group: "§2 比較級・最上級",
+        prompt: "ハンスは私の兄です。",
+        answers: ["Hans ist mein älterer Bruder."],
+        explain: `<ul><li>「兄」= <b>älterer Bruder</b>(alt の比較級 älter + 男性1格語尾 -er)。</li>
+          <li>付加語として使う比較級・最上級は、原級と同じく格語尾をつける。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "ペーターはクラスで一番優秀な生徒です。",
+        answers: ["Peter ist der beste Schüler der Klasse.", "Peter ist der beste Schüler in der Klasse."],
+        explain: `<ul><li>gut – besser – <b>best</b>(不規則)。der beste Schüler(男性1格・弱変化 -e)。</li>
+          <li>der Klasse = 女性2格「クラスの」。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "ペーターとハインツは同い年です。",
+        answers: ["Peter ist so alt wie Heinz.", "Heinz ist so alt wie Peter."],
+        explain: `<ul><li><b>so + 原級 + wie</b> =「〜と同じくらい…」。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "カールはマックスほど背が高くない。",
+        answers: ["Karl ist nicht so groß wie Max."],
+        explain: `<ul><li><b>nicht so + 原級 + wie</b> =「〜ほど…ない」。</li><li>groß =「背が高い」。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "マックスはカールより背が高い。",
+        answers: ["Max ist größer als Karl."],
+        explain: `<ul><li><b>比較級 + als</b> =「〜より…」(英語の than)。</li><li>groß – <b>größer</b> – größt(ウムラウトがつく)。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "マリーアは私より勤勉だ。",
+        answers: ["Maria ist fleißiger als ich."],
+        explain: `<ul><li>fleißig – <b>fleißiger</b> – fleißigst。</li><li>als の後は比べる相手と同じ格 → 主語どうしなので <b>ich</b>(1格)。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "このクラスではマックスが一番背が高い。",
+        answers: ["In der Klasse ist Max am größten.", "In der Klasse ist Max der Größte.", "In dieser Klasse ist Max am größten.", "In dieser Klasse ist Max der Größte.", "Max ist in der Klasse am größten."],
+        explain: `<ul><li>最上級を述語にするときは <b>am + —sten</b>(または 定冠詞 + —ste)。ふつうは am —sten。</li>
+          <li>教科書の文は In der Klasse ... だが、「この」を訳して in dieser Klasse でもよい。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "私たちみんなのなかで彼女が一番勤勉だ。",
+        answers: ["Sie ist von uns allen am fleißigsten.", "Sie ist von uns allen die Fleißigste."],
+        explain: `<ul><li><b>von uns allen</b> =「私たちみんなの中で」(von + 3格)。</li>
+          <li>am fleißigsten(= die Fleißigste)。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "この町は春が一番美しい。",
+        answers: ["Diese Stadt ist im Frühling am schönsten.", "Im Frühling ist diese Stadt am schönsten."],
+        explain: `<ul><li>ほかのものとの比較ではなく、<b>ある条件のもとで</b>「もっとも〜だ」というときは必ず <b>am —sten</b>。</li>
+          <li>im Frühling =「春に」。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "マリーアは兄(弟)より熱心に働く。",
+        note: "※ この文は教科書に和訳が印刷されていないため、和訳はアプリ側で作成しました。",
+        answers: ["Maria arbeitet fleißiger als ihr Bruder."],
+        explain: `<ul><li>比較級はそのまま<b>副詞</b>としても使える(fleißiger arbeiten =「より熱心に働く」)。</li>
+          <li>「彼女の兄(弟)」= <b>ihr Bruder</b>。</li></ul>` },
+      { group: "§2 比較級・最上級",
+        prompt: "赤ワインと白ワインとどちらが好きですか? ― 白ワインです。でも一番好きなのはビールです。",
+        answers: ["Was trinken Sie lieber, Rotwein oder Weißwein? — Ich trinke lieber Weißwein, aber am liebsten Bier."],
+        explain: `<ul><li>gern – <b>lieber</b> – <b>am liebsten</b>(不規則)。「〜するのが好き」は 動詞 + gern。</li>
+          <li>lieber =「より好んで」、am liebsten =「一番好んで」。</li></ul>` },
+
+      { group: "非人称熟語",
+        prompt: "この近くに郵便局がありますか?",
+        answers: ["Gibt es hier in der Nähe eine Post?"],
+        explain: `<ul><li><b>es gibt + 4格</b> =「〜がある」。疑問文では Gibt es ...?</li><li>hier in der Nähe =「この近くに」。</li></ul>` },
+      { group: "非人称熟語",
+        prompt: "元気かい? ― ああ、元気だよ。君はどう?",
+        answers: ["Wie geht es dir? — Danke, gut. Und dir?", "Wie geht's dir? — Danke, gut. Und dir?"],
+        explain: `<ul><li><b>Wie geht es + 3格?</b> =「〜は元気ですか」。親しい相手なので dir。</li><li>Und dir? =「君は?」(3格のまま)。</li></ul>` },
+      { group: "非人称熟語",
+        prompt: "彼にとって大事なのは金だけだ。",
+        answers: ["Es geht ihm nur um das Geld.", "Es geht ihm nur ums Geld."],
+        explain: `<ul><li><b>es geht 人³ um 物⁴</b> =「〜にとって…が問題だ/大事だ」。</li></ul>` },
+      { group: "非人称熟語",
+        prompt: "日曜日には多くの人が町に来る。",
+        answers: ["Es kommen sonntags viele Leute in die Stadt.", "Sonntags kommen viele Leute in die Stadt."],
+        explain: `<ul><li>es は<b>形式主語</b>としても使う。本当の主語は viele Leute(複数)なので動詞は <b>kommen</b>。</li>
+          <li>sonntags =「日曜日に(いつも)」。in die Stadt =「町へ」(方向なので4格)。</li></ul>` },
+      { group: "非人称熟語",
+        prompt: "時間どおり5時にあそこに行くのは無理だ。",
+        answers: ["Es ist unmöglich, pünktlich um 5 Uhr dort zu sein."],
+        explain: `<ul><li><b>Es ist ..., zu 不定詞</b> =「〜することは…だ」(es は zu 不定詞句を指す)。</li>
+          <li>pünktlich =「時間どおりに」、um 5 Uhr =「5時に」。</li></ul>` },
+
+      { group: "§3 3格の用法",
+        prompt: "私は手を洗う。",
+        answers: ["Ich wasche mir die Hände."],
+        explain: `<ul><li>体の部分を洗うときは「誰の」を<b>3格</b>で表す(mir)。所有冠詞(meine Hände)ではなく定冠詞 die を使う。</li></ul>` },
+      { group: "§3 3格の用法",
+        prompt: "母は子どもの足を洗ってやる。",
+        answers: ["Die Mutter wäscht dem Kind die Füße."],
+        explain: `<ul><li>「子どもの足」= <b>dem Kind</b>(3格)+ die Füße。</li><li>waschen は du wäschst, er <b>wäscht</b>(幹母音が変わる)。Fuß の複数は Füße。</li></ul>` },
+      { group: "§3 3格の用法",
+        prompt: "ミュラー氏は息子にカメラを買ってやる。",
+        answers: ["Herr Müller kauft seinem Sohn eine Kamera."],
+        explain: `<ul><li>「〜のために」の3格 → <b>seinem Sohn</b>(男性3格)。eine Kamera は4格。</li></ul>` },
+
+      { group: "従属接続詞",
+        prompt: "外国へ旅行するときには、パスポートが必要です。",
+        answers: ["Man braucht einen Pass, wenn man ins Ausland reist.", "Wenn man ins Ausland reist, braucht man einen Pass."],
+        explain: `<ul><li><b>wenn</b> =「〜するときには」。副文では定動詞が文末(reist)。</li>
+          <li>ins Ausland =「外国へ」。主語は一般の人なので man。</li>
+          <li>副文を前に出すと、主文は動詞から始まる(braucht man ...)。</li></ul>` },
+      { group: "従属接続詞",
+        prompt: "まだ仕事をしなければならないから、いっしょに行けないよ。",
+        answers: ["Da ich noch arbeiten muss, kann ich nicht mitgehen.", "Ich kann nicht mitgehen, da ich noch arbeiten muss.", "Weil ich noch arbeiten muss, kann ich nicht mitgehen.", "Ich kann nicht mitgehen, weil ich noch arbeiten muss."],
+        explain: `<ul><li><b>da</b> =「〜だから」(相手も知っている理由)。副文では助動詞 muss が文末。</li>
+          <li>副文が先なので主文は <b>kann ich</b> と倒置。mit|gehen は話法の助動詞と一緒なので不定詞で文末。</li></ul>` },
+      { group: "従属接続詞",
+        prompt: "彼はなぜ授業に出てこないの? ― 風邪をひいたからです。",
+        answers: ["Warum kommt er nicht in den Unterricht? — Weil er erkältet ist."],
+        explain: `<ul><li>Warum? への答えは <b>weil</b>。副文なので ist が文末。</li><li>in den Unterricht kommen =「授業に出る」。erkältet sein =「風邪をひいている」。</li></ul>` },
+      { group: "従属接続詞",
+        prompt: "遅れて来てごめんなさい。",
+        answers: ["Es tut mir leid, dass ich zu spät komme.", "Es tut mir leid, dass ich zu spät gekommen bin."],
+        explain: `<ul><li><b>Es tut mir leid, dass ...</b> =「〜してごめんなさい」。</li><li>dass 副文では定動詞が文末(komme)。zu spät kommen =「遅刻する」。</li></ul>` },
+      { group: "従属接続詞",
+        prompt: "彼はすぐ帰ってくると思います。",
+        answers: ["Ich glaube, dass er gleich zurückkommt.", "Ich glaube, er kommt gleich zurück."],
+        explain: `<ul><li>dass 副文では定動詞が文末。<b>副文中では分離動詞は分離しない</b>(zurückkommt)。</li><li>gleich =「すぐに」。</li></ul>` },
+      { group: "従属接続詞",
+        prompt: "私がまだ子どもだった頃、私たちは犬を飼っていました。この犬は私のよい友だちでした。",
+        answers: ["Als ich noch ein Kind war, hatten wir einen Hund, der mein guter Freund war."],
+        explain: `<ul><li><b>als</b> =「〜したとき」(過去の1回のこと)。副文なので war が文末。</li>
+          <li>副文が先 → 主文は <b>hatten wir</b> と倒置。</li>
+          <li>「この犬は〜」は関係代名詞 <b>der</b>(男性1格、先行詞 einen Hund)でつなぐ。mein guter Freund は1格。</li></ul>` }
+    ]
   }
 ];
 
@@ -278,7 +397,7 @@ if (!SECTIONS.some(s => s.id === current)) current = SECTIONS[0].id;
 
 const norm = s => s.normalize("NFC").toLowerCase()
   .replace(/ae/g,"ä").replace(/oe/g,"ö").replace(/ue/g,"ü").replace(/ss/g,"ß")
-  .replace(/[.,!?。、]/g,"").replace(/\s+/g," ").trim();
+  .replace(/[.,!?;:。、—–„“"'’-]/g," ").replace(/\s+/g," ").trim();
 const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 function renderNav() {
@@ -338,6 +457,7 @@ function renderQuestion(sec, q, i) {
   d.innerHTML = `
     <div class="num">問 ${i + 1}</div>
     <div class="prompt">${esc(q.prompt)}</div>
+    ${q.note ? `<div class="num">${esc(q.note)}</div>` : ""}
     <textarea rows="2" placeholder="${tr ? "→ 日本語訳を書いてみよう" : "→ ここに解答を入力"}" spellcheck="false" autocapitalize="off"></textarea>
     ${tr ? "" : `<div class="chars">${["ä","ö","ü","ß","Ä","Ö","Ü"].map(c => `<button type="button">${c}</button>`).join("")}</div>`}
     <div class="actions">
