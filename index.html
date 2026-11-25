@@ -44,6 +44,11 @@
   .self button { border:1px solid var(--line); background:var(--card); border-radius:4px; padding:2px 8px; cursor:pointer; font-size:.85rem; }
   .group { margin:22px 0 4px; font-size:.85rem; font-weight:700; color:var(--accent); letter-spacing:.05em; }
   .answer .ja-model { font-family:inherit; font-weight:600; font-size:1rem; }
+  .choices { display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 4px; }
+  .choice { border:1px solid var(--line); background:#fafbfc; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:1.1rem; font-family: Georgia, "Times New Roman", serif; color:var(--ink); }
+  .choice.picked-ok { background:#e6f5ec; border-color:var(--ok); }
+  .choice.picked-ng { background:#fbeaea; border-color:var(--ng); }
+  em.hl { font-style:italic; text-decoration:underline; text-underline-offset:3px; font-weight:700; }
   .empty { background:var(--card); border:1px dashed var(--line); border-radius:10px; padding:28px; text-align:center; color:var(--sub); }
   .tips { background:#fffaf0; border:1px solid #f0e2c0; border-radius:10px; padding:12px 16px; font-size:.92rem; margin-bottom:8px; }
   .tips summary { cursor:pointer; font-weight:600; }
@@ -73,8 +78,62 @@ const SECTIONS = [
   {
     id: "pronunciation",
     title: "1. 発音",
-    instruction: "(問題写真の受け取り後に追加予定)",
-    questions: []
+    instruction: "次の各組の単語の中に、斜体の部分の発音が他と異なる語が1語ずつあります。その単語を選びなさい。(2点×10)",
+    mode: "choice",
+    // choices の [ ] で囲んだ部分が問題用紙の斜体部分(画面では下線つき斜体で表示)
+    // answer は正解の番号(1〜4)
+    // 補足問題は group: "補足問題" をつけて questions の末尾に追加する
+    supplementGroup: "補足問題",
+    tips: `
+      <table>
+        <tr><th>つづり</th><th>発音</th><th>例</th></tr>
+        <tr><td>ch(a, o, u, au の後)</td><td>[x] 喉の奥の「ハ」</td><td>Sprache, Buch, auch</td></tr>
+        <tr><td>ch(それ以外:e, i, ä, ö, ü, 子音の後)</td><td>[ç]「ヒ」</td><td>ich, möchte, durch, nächst</td></tr>
+        <tr><td>chs / x</td><td>[ks]</td><td>sechs, wachsen, Taxi</td></tr>
+        <tr><td>z / tz / ts</td><td>[ts]</td><td>Zimmer, jetzt, Herz</td></tr>
+        <tr><td>w / qu</td><td>[v] / [kv]</td><td>Mittwoch, bequem</td></tr>
+        <tr><td>v</td><td>ふつう [f]、外来語は [v]</td><td>viel [f] / November [v]</td></tr>
+        <tr><td>語頭・つづりの頭の st, sp</td><td>[ʃt] [ʃp]</td><td>Stern, be|stehen, Spaß</td></tr>
+        <tr><td>それ以外の st</td><td>[st]</td><td>gestern, Fenster</td></tr>
+        <tr><td>s + 母音</td><td>[z](濁る)</td><td>sagen, unser, Pause</td></tr>
+        <tr><td>語末・音節末の s</td><td>[s]</td><td>Samstag, eins</td></tr>
+        <tr><td>語末・音節末の b, d, g</td><td>[p] [t] [k]</td><td>Rundfunk, Tag</td></tr>
+        <tr><td>ie</td><td>[iː]、アクセントのない語末の -ie は [iə]</td><td>Liebe / Familie</td></tr>
+        <tr><td>ei / ai</td><td>[aɪ]「アイ」</td><td>eins, Mai</td></tr>
+        <tr><td>eu / äu</td><td>[ɔʏ]「オイ」</td><td>heute, Fräulein</td></tr>
+      </table>`,
+    questions: [
+      { group: "大問1", choices: ["dur[ch]", "Spra[ch]e", "wi[ch]tig", "mö[ch]te"], answer: 2,
+        readings: ["[ç]", "[x]", "[ç]", "[ç]"],
+        explain: "a, o, u, au の後の ch は [x](喉の奥の「ハ」)。それ以外の ch は [ç](「ヒ」)。durch は子音 r の後なので [ç]。" },
+      { group: "大問1", choices: ["[Z]immer", "je[tz]t", "Her[z]", "[T]ier"], answer: 4,
+        readings: ["[ts]", "[ts]", "[ts]", "[t]"],
+        explain: "z と tz はどちらも [ts](「ツ」)。Tier の T だけが [t]。" },
+      { group: "大問1", choices: ["Mitt[w]och", "beq[u]em", "No[v]ember", "[v]iel"], answer: 4,
+        readings: ["[v]", "[v](qu = [kv])", "[v]", "[f]"],
+        explain: "w は [v]。qu は [kv] なので u の部分が [v]。v はふつう [f] だが、November のような外来語では [v]。viel の v は [f]。" },
+      { group: "大問1", choices: ["[S]tern", "ge[s]tern", "be[s]tehen", "[S]paß"], answer: 2,
+        readings: ["[ʃ]", "[s]", "[ʃ]", "[ʃ]"],
+        explain: "語頭(つづりの頭)の st, sp の s は [ʃ](「シュ」)。bestehen は be + stehen なので stehen の頭として [ʃt]。gestern の st は語中なので [st]。" },
+      { group: "大問1", choices: ["L[ie]be", "B[i]bel", "B[ie]ne", "Famil[ie]"], answer: 4,
+        readings: ["[iː]", "[iː]", "[iː]", "[iə]"],
+        explain: "ie はふつう長い [iː]。Bibel の i もアクセントがあり長い [iː]。Familie のようにアクセントのない語末の -ie は [iə](「イエ」)。" },
+      { group: "大問1", choices: ["Run[d]funk", "[d]raußen", "Frie[d]e", "[D]ruck"], answer: 1,
+        readings: ["[t]", "[d]", "[d]", "[d]"],
+        explain: "語末・音節末の d は [t] になる(Rund|funk の d は Rund の終わり)。ほかは母音や r の前なので [d]。" },
+      { group: "大問1", choices: ["[ei]ns", "Fräul[ei]n", "M[ai]", "L[ie]d"], answer: 4,
+        readings: ["[aɪ]", "[aɪ]", "[aɪ]", "[iː]"],
+        explain: "ei と ai は [aɪ](「アイ」)。ie は [iː](「イー」)。" },
+      { group: "大問1", choices: ["[s]agen", "un[s]er", "Pau[s]e", "Sam[s]tag"], answer: 4,
+        readings: ["[z]", "[z]", "[z]", "[s]"],
+        explain: "母音の前の s は濁って [z]。Samstag の s は Sams|tag の音節末で、後ろに母音がないので濁らず [s]。" },
+      { group: "大問1", choices: ["h[eu]te", "Mus[eu]m", "Fr[eu]de", "L[eu]te"], answer: 2,
+        readings: ["[ɔʏ]", "[eːʊ]", "[ɔʏ]", "[ɔʏ]"],
+        explain: "eu はふつう [ɔʏ](「オイ」)。Museum は外来語で Mu-se-um と e と u が別々の音節なので「エーウ」。" },
+      { group: "大問1", choices: ["se[chs]", "Ta[x]i", "nä[ch]st", "wa[chs]en"], answer: 3,
+        readings: ["[ks]", "[ks]", "[ç]", "[ks]"],
+        explain: "chs と x は [ks](「クス」)。nächst の ch は chs ではなく ch + st なので、ä の後の [ç]。" }
+    ]
   },
   {
     id: "passive",
@@ -392,7 +451,7 @@ const SECTIONS = [
 
 /* ===================== アプリ本体 ===================== */
 const state = {};   // state[sectionId][i] = true(正解) / false(不正解)
-let current = location.hash.slice(1) || "passive";
+let current = location.hash.slice(1) || SECTIONS[0].id;
 if (!SECTIONS.some(s => s.id === current)) current = SECTIONS[0].id;
 
 const norm = s => s.normalize("NFC").toLowerCase()
@@ -443,11 +502,48 @@ function render() {
       h.className = "group"; h.textContent = q.group;
       qs.appendChild(h); lastGroup = q.group;
     }
-    qs.appendChild(renderQuestion(sec, q, i));
+    qs.appendChild(sec.mode === "choice" ? renderChoice(sec, q, i) : renderQuestion(sec, q, i));
   });
+  if (sec.supplementGroup && !sec.questions.some(q => q.group === sec.supplementGroup)) {
+    qs.insertAdjacentHTML("beforeend", `<div class="group">${esc(sec.supplementGroup)}</div>
+      <div class="empty">補足問題はまだ登録されていません。</div>`);
+  }
   document.getElementById("showAll").onclick = () => qs.querySelectorAll(".answer").forEach(a => a.classList.add("open"));
   document.getElementById("reset").onclick = () => { state[sec.id] = {}; render(); };
   renderScore(sec);
+}
+
+// "dur[ch]" → dur<em>ch</em>(斜体部分に下線)
+const hl = w => esc(w).replace(/\[(.+?)\]/g, '<em class="hl">$1</em>');
+const NUM = ["①","②","③","④","⑤"];
+
+function renderChoice(sec, q, i) {
+  const d = document.createElement("div");
+  d.className = "q";
+  d.innerHTML = `
+    <div class="num">問 ${i + 1}</div>
+    <div class="choices">${q.choices.map((c, k) =>
+      `<button type="button" class="choice" data-k="${k + 1}">${NUM[k]} ${hl(c)}</button>`).join("")}</div>
+    <div class="actions"><button class="btn-show">解答・解説を見る</button></div>
+    <div class="result"></div>
+    <div class="answer">
+      <div class="model ja-model">正解: ${NUM[q.answer - 1]} ${hl(q.choices[q.answer - 1])}</div>
+      ${q.readings ? `<div class="alt">${q.choices.map((c, k) => `${NUM[k]} ${hl(c)} ${esc(q.readings[k])}`).join(" / ")}</div>` : ""}
+      ${q.explain ? `<div class="exp">${q.explain}</div>` : ""}
+    </div>`;
+  const res = d.querySelector(".result"), ans = d.querySelector(".answer");
+  d.querySelectorAll(".choice").forEach(b => b.onclick = () => {
+    const ok = +b.dataset.k === q.answer;
+    (state[sec.id] ||= {})[i] = ok;
+    d.querySelectorAll(".choice").forEach(x => x.classList.remove("picked-ok", "picked-ng"));
+    b.classList.add(ok ? "picked-ok" : "picked-ng");
+    res.className = "result " + (ok ? "ok" : "ng");
+    res.textContent = ok ? "◎ 正解!" : `× 正解は ${NUM[q.answer - 1]} です。`;
+    ans.classList.add("open");
+    renderScore(sec);
+  });
+  d.querySelector(".btn-show").onclick = () => ans.classList.toggle("open");
+  return d;
 }
 
 function renderQuestion(sec, q, i) {
